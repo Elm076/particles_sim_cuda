@@ -1,0 +1,8 @@
+*
+!.gitignore
+!config.h
+!funcionesGPU.cu
+!funcionesGPU.cuh
+!Header.cuh
+!particulas.cpp
+!particulas.h
