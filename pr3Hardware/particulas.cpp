@@ -168,10 +168,22 @@ void ParticulasApp::ejecutar() {
 
 void ParticulasApp::prepararSimulacion() {
     coordsAct.clear();
+    coordsAnt.clear();
+    float dt = SIM_PASO_TIEMPO;
+
     for (unsigned c = 0; c < numParticulas; ++c) {
-        Coord nuevaCoordenada;
-        nuevaCoordenada.x = aleatorio(-1.0f, 1.0f); nuevaCoordenada.y = aleatorio(-1.0f, 1.0f);
-        coordsAct.push_back(nuevaCoordenada);
+        Coord act;
+        act.x = aleatorio(-1.0f, 1.0f);
+        act.y = aleatorio(-1.0f, 1.0f);
+        coordsAct.push_back(act);
+
+        Coord ant;
+        float vx = 0.0f;
+        float vy = 0.0f;
+
+        vx = aleatorio(-0.5f, 0.5f);
+        vy = aleatorio(-0.5f, 0.5f);
+        coordsAnt.push_back(ant);
     }
 
     velocidadesAct.resize(NUM_PARTICULAS);
@@ -181,7 +193,7 @@ void ParticulasApp::prepararSimulacion() {
     // transferir la posición de las partículas a GPU en CUDA/OPENCL
     // -----------------------------------------------------------------------
 
-    instanciarMemGPU(&particulasGPUAnterior, &particulasGPUActual, &particulasGPUSiguiente, &velocidadesGPU, numBytesParticulas, numBytesVelocidades, coordsAct.data());
+    instanciarMemGPU(&particulasGPUAnterior, &particulasGPUActual, &particulasGPUSiguiente, &velocidadesGPU, numBytesParticulas, numBytesVelocidades,coordsAnt.data(), coordsAct.data());
 
     // Iniciar contador de tiempo
     t = 0;
