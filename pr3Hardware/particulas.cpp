@@ -21,6 +21,7 @@
 #include <sstream>
 #include <algorithm>
 #include <chrono>
+#include <random>
 
 using namespace std;
 
@@ -61,7 +62,7 @@ static const char *codVisFS = R"(
 ParticulasApp::ParticulasApp(unsigned numParticulas) :
             GLFWWindow(512, 512, "Partículas"),
             numParticulas(numParticulas) {
-    glfwSwapInterval(0);
+    glfwSwapInterval(1); //To force VSync
     makeContextCurrent();
 }
 
@@ -144,6 +145,7 @@ void ParticulasApp::ejecutar() {
         mostrarFR();
         
         glfwPollEvents();
+
     }
 #else
     // Bucle de solo simulación
@@ -171,18 +173,30 @@ void ParticulasApp::prepararSimulacion() {
     coordsAnt.clear();
     float dt = SIM_PASO_TIEMPO;
 
+    // --- NUEVO GENERADOR ALEATORIO MODERNO ---
+    std::random_device rd;
+    std::mt19937 gen(rd()); // Motor Mersenne Twister (Muy preciso)
+    std::uniform_real_distribution<float> distRadio(0.1f, 0.9f);
+    std::uniform_real_distribution<float> distAngulo(0.0f, 6.28318f);
+
     for (unsigned c = 0; c < numParticulas; ++c) {
         Coord act;
-        act.x = aleatorio(-1.0f, 1.0f);
-        act.y = aleatorio(-1.0f, 1.0f);
+        float radio = distRadio(gen);
+        float angulo = distAngulo(gen);
+
+        act.x = radio * cos(angulo);
+        act.y = radio * sin(angulo);
         coordsAct.push_back(act);
 
-        Coord ant;
-        float vx = 0.0f;
-        float vy = 0.0f;
+        // Velocidad orbital sin peligro de división por cero
+        float velOrbital = 0.3f / sqrt(radio);
 
-        vx = aleatorio(-0.5f, 0.5f);
-        vy = aleatorio(-0.5f, 0.5f);
+        float vx = -sin(angulo) * velOrbital;
+        float vy = cos(angulo) * velOrbital;
+
+        Coord ant;
+        ant.x = act.x - vx * dt;
+        ant.y = act.y - vy * dt;
         coordsAnt.push_back(ant);
     }
 
