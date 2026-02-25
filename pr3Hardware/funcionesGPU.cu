@@ -8,14 +8,14 @@ void checkCudaError(cudaError_t result, const char* msg)
         exit(result);
     }
 }
-void instanciarMemGPU(Coord** posAntGPU, Coord** posActGPU, Coord** posSigGPU, float** velocidadesGPU, unsigned int numBytesPos, unsigned int numBytesVel, Coord* partAct)
+void instanciarMemGPU(Coord** posAntGPU, Coord** posActGPU, Coord** posSigGPU, float** velocidadesGPU, unsigned int numBytesPos, unsigned int numBytesVel, Coord* partAnt, Coord* partAct)
 {
     checkCudaError(cudaMalloc(posAntGPU, numBytesPos), "cudaMalloc1 posAntGPU");
     checkCudaError(cudaMalloc(posActGPU, numBytesPos), "cudaMalloc2 posActGPU");
     checkCudaError(cudaMalloc(posSigGPU, numBytesPos), "cudaMalloc3 posSigGPU");
     checkCudaError(cudaMalloc(velocidadesGPU, numBytesVel), "cudaMalloc4 velocidadesGPU");
 
-    checkCudaError(cudaMemcpy(*posAntGPU, partAct, numBytesPos, cudaMemcpyHostToDevice), "cudaMemcpy1 posAntGPU");
+    checkCudaError(cudaMemcpy(*posAntGPU, partAnt, numBytesPos, cudaMemcpyHostToDevice), "cudaMemcpy1 posAntGPU");
     checkCudaError(cudaMemcpy(*posActGPU, partAct, numBytesPos, cudaMemcpyHostToDevice), "cudaMemcpy2 posActGPU");
 }
 
@@ -58,8 +58,34 @@ extern "C" __global__ void calculoNuevaPosicionGPU(Coord * posAntGPU, Coord * po
             }
         }
         //Integraci�n de Verlet
-        posSigGPU[index].x = 2 * Pi.x - PiAnt.x + (pasoTiempo * pasoTiempo) * fuerza.x;
-        posSigGPU[index].y = 2 * Pi.y - PiAnt.y + (pasoTiempo * pasoTiempo) * fuerza.y;
+        float nextX = 2 * Pi.x - PiAnt.x + (pasoTiempo * pasoTiempo) * fuerza.x;
+        float nextY = 2 * Pi.y - PiAnt.y + (pasoTiempo * pasoTiempo) * fuerza.y;
+
+        float limite = 1.0f;
+        float rebote = 0.8f;
+
+        // Comprobación de colisión en X
+        if (nextX > limite) {
+            nextX = limite;
+            // Invertimos la inercia modificando la posición anterior
+            posActGPU[index].x = nextX + (Pi.x - PiAnt.x) * rebote;
+        } else if (nextX < -limite) {
+            nextX = -limite;
+            posActGPU[index].x = nextX + (Pi.x - PiAnt.x) * rebote;
+        }
+
+        // Comprobación de colisión en Y
+        if (nextY > limite) {
+            nextY = limite;
+            posActGPU[index].y = nextY + (Pi.y - PiAnt.y) * rebote;
+        } else if (nextY < -limite) {
+            nextY = -limite;
+            posActGPU[index].y = nextY + (Pi.y - PiAnt.y) * rebote;
+        }
+
+        // Asignamos la posición final segura
+        posSigGPU[index].x = nextX;
+        posSigGPU[index].y = nextY;
     }
 }
 
