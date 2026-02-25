@@ -20,7 +20,7 @@
 
 /* Parámetros de simulación */
 const float NUM_PARTICULAS = 5000;
-const float SIM_PASO_TIEMPO = 0.0005f;
+const float SIM_PASO_TIEMPO = 0.005f;
 //const float SIM_PASO_TIEMPO = 0.001f;
 
 //const float CONST_GRAV = 6.67430e-11f;

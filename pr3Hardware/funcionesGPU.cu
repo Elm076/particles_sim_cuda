@@ -31,7 +31,7 @@ extern "C" __global__ void calculoNuevaPosicionGPU(Coord * posAntGPU, Coord * po
         // Parámetro epsilon para el Plummer Softening
         // Puedes jugar con este valor. Si es muy grande, la gravedad será "esponjosa".
         // Si es muy pequeño, volverás a tener rebotes extremos.
-        float epsilon = 0.0012f;
+        float epsilon = 0.05f;// Un colchón grande para evitar aceleraciones infinitas
         float epsilonSqr = epsilon * epsilon;
         
         // Calcular la fuerza gravitacional
