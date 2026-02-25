@@ -24,7 +24,8 @@ const float SIM_PASO_TIEMPO = 0.0005f;
 //const float SIM_PASO_TIEMPO = 0.001f;
 
 //const float CONST_GRAV = 6.67430e-11f;
-const float CONST_GRAV = 0.005f;
+//const float CONST_GRAV = 0.005f;
+const float CONST_GRAV = 0.0001f;
 //const float CONST_GRAV = 0.1f;
 //const float CONST_GRAV = 1;
 

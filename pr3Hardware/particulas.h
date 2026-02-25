@@ -52,6 +52,7 @@ class ParticulasApp : public GLFWWindow {
     
     /** Array de coordenadas de las partículas. NOTA: SOLO HACE FALTA UNO EN LA PARTE DEL HOST PARA HACER LA GESTIÓN DE ESTAS */
     std::vector<Coord> coordsAct;
+    std::vector<Coord> coordsAnt; // Para guardar las posiciones previas
 
     /** Array de velocidades de las partículas. Necesario para el cálculo de la partícula más rápida en el tiempo de simulación */
     std::vector<float> velocidadesAct;
