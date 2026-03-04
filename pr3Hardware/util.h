@@ -19,23 +19,23 @@
 
 #include "glad/glad/glad.h"
 
-const unsigned SIM_ANCHO_TEXTURA_DATOS = 512;
+const unsigned SIM_DATA_TEXTURE_WIDTH = 512;
 
-float aleatorio(float min, float max);
+float random(float min, float max);
 
-void comprobarErrorShader(GLint status, GLint shader, const char *msg);
+void checkShaderError(GLint status, GLint shader, const char *msg);
 
-void comprobarErrorProgramaShader(GLint status, GLint program, const char *msg);
+void checkShaderProgramError(GLint status, GLint program, const char *msg);
 
-/** Crear programa con vertex y fragment shader
- @arg vs Código del vertex shader
- @arg fs Código del fragment shader */
-GLuint crearProgramaShader(const char *vs, const char *fs);
+/** Create program with vertex and fragment shader
+ @arg vs Vertex shader code
+ @arg fs Fragment shader code */
+GLuint createShaderProgram(const char *vs, const char *fs);
 
-/** Crear textura 2D cuadrada de vectores de vec2
- @arg tam Ancho y alto de la textura
- @arg datos Puntero al array de datos para inicializar textura (opcional)
- @return Identificador de textura */
-GLuint crearTextura2DVec2(unsigned tam, const float *datos = 0);
-    
+/** Create 2D square texture of vec2 vectors
+ @arg size Texture width and height
+ @arg data Pointer to data array to initialize texture (optional)
+ @return Texture identifier */
+GLuint createTexture2DVec2(unsigned size, const float *data = 0);
+
 #endif

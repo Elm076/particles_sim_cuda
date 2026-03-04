@@ -18,10 +18,10 @@
 #ifndef config_h
 #define config_h
 
-/* Parámetros de simulación */
-const float NUM_PARTICULAS = 5000;
-const float SIM_PASO_TIEMPO = 0.005f;
-//const float SIM_PASO_TIEMPO = 0.001f;
+/* Simulation parameters */
+const float NUM_PARTICLES = 5000;
+const float SIM_TIME_STEP = 0.005f;
+//const float SIM_TIME_STEP = 0.001f;
 
 //const float CONST_GRAV = 6.67430e-11f;
 //const float CONST_GRAV = 0.005f;
@@ -29,9 +29,9 @@ const float CONST_GRAV = 0.0001f;
 //const float CONST_GRAV = 0.1f;
 //const float CONST_GRAV = 1;
 
-//duración en SEGUNDOS
-const int SIM_DURACION = 5;
+// Duration in SECONDS
+const int SIM_DURATION = 5;
 
-#define VISUALIZAR
+#define VISUALIZE
 
 #endif

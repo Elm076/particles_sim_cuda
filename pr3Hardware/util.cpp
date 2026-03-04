@@ -21,11 +21,11 @@
 #include <cmath>
 #include <random>
 
-float aleatorio(float min, float max) {
+float random(float min, float max) {
     return min + (max - min) * rand() / RAND_MAX;
 }
 
-void comprobarErrorShader(GLint status, GLint shader, const char *msg) {
+void checkShaderError(GLint status, GLint shader, const char *msg) {
     if (status == GL_FALSE) {
         std::cerr << msg << std::endl;
         
@@ -37,7 +37,7 @@ void comprobarErrorShader(GLint status, GLint shader, const char *msg) {
     }
 }
 
-void comprobarErrorProgramaShader(GLint status, GLint program, const char *msg) {
+void checkShaderProgramError(GLint status, GLint program, const char *msg) {
     if (status == GL_FALSE) {
         std::cerr << msg << std::endl;
         
@@ -49,39 +49,39 @@ void comprobarErrorProgramaShader(GLint status, GLint program, const char *msg) 
     }
 }
 
-GLuint crearProgramaShader(const char *vs, const char *fs) {
+GLuint createShaderProgram(const char *vs, const char *fs) {
     GLint status;
     
-    // Preparación de shaders
+    // Shader preparation
     GLint vShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vShader, 1, (const GLchar **) &vs, 0);
     glCompileShader(vShader);
     glGetShaderiv(vShader, GL_COMPILE_STATUS, &status);
-    comprobarErrorShader(status, vShader, "Error de compilación del vertex shader.");
-    
+    checkShaderError(status, vShader, "Vertex shader compilation error.");
+
     GLint fShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fShader, 1, (const GLchar **) &fs, 0);
     glCompileShader(fShader);
     glGetShaderiv(fShader, GL_COMPILE_STATUS, &status);
-    comprobarErrorShader(status, fShader, "Error de compilación de fragment shader.");
-    
-    GLuint programa = glCreateProgram();
-    glAttachShader(programa, vShader);
-    glAttachShader(programa, fShader);
-    
-    glLinkProgram(programa);
-    glGetProgramiv(programa, GL_LINK_STATUS, &status);
-    comprobarErrorProgramaShader(status, programa, "Error de enlazado de programa shader");
+    checkShaderError(status, fShader, "Fragment shader compilation error.");
 
-    glDetachShader(programa, vShader);
-    glDetachShader(programa, fShader);
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vShader);
+    glAttachShader(program, fShader);
+
+    glLinkProgram(program);
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
+    checkShaderProgramError(status, program, "Shader program linking error");
+
+    glDetachShader(program, vShader);
+    glDetachShader(program, fShader);
     glDeleteShader(vShader);
     glDeleteShader(fShader);
 
-    return programa;
+    return program;
 }
 
-GLuint crearTextura2DVec2(unsigned tam, const float *datos) {
+GLuint createTexture2DVec2(unsigned size, const float *data) {
     GLuint tex;
 
     glGenTextures(1, &tex);
@@ -89,7 +89,7 @@ GLuint crearTextura2DVec2(unsigned tam, const float *datos) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, SIM_ANCHO_TEXTURA_DATOS, ceil((float)tam / SIM_ANCHO_TEXTURA_DATOS), 0, GL_RG, GL_FLOAT, datos);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, SIM_DATA_TEXTURE_WIDTH, ceil((float)size / SIM_DATA_TEXTURE_WIDTH), 0, GL_RG, GL_FLOAT, data);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     return tex;
